@@ -5,6 +5,8 @@ function Slider(options)
 	var height = options.height;
 	var imgs = options.imgs;
 	var container = options.container;
+	var direction = options.direction;
+	var page = options.page;
 	//结构
 	var drawpart = {
 		util:function(){
@@ -12,12 +14,16 @@ function Slider(options)
 			slider_wrap.setAttribute("id","slider_wrap");
 			slider_wrap.style.width = width +"px";
 			slider_wrap.style.height = height +"px";
+			slider_wrap.style.background = "url("+imgs[0]+")";
 			this.drawimgs(slider_wrap);
+			if(page) this.drawpage(slider_wrap);
 			document.getElementById(container).appendChild(slider_wrap);
 		},
 		drawimgs:function(wrap){
 			var slider_inner = document.createElement("div");
 			slider_inner.setAttribute("id","slider_inner");
+			slider_inner.className = slider_inner.className + " "+"clear";
+			
 			for(var i =0;i<imgs.length;i++)
 			{
 				var img = document.createElement("img");
@@ -26,8 +32,23 @@ function Slider(options)
 				
 			}
 			wrap.appendChild(slider_inner);
+		},
+		drawpage:function(wrap){
+			var pagecontainer =  document.createElement("div");
+			pagecontainer.setAttribute("class","pagenation");
+			pagecontainer.setAttribute("id","pagenation");
+			for(var i = 0;i<imgs.length;i++)
+			{
+				var span = document.createElement("span");
+				if(i==0) span.setAttribute("id","selected");
+				var text = i+1;
+				span.appendChild(document.createTextNode(text.toString()));
+				pagecontainer.appendChild(span);
+			}
+			wrap.appendChild(pagecontainer);
+			
 		}
-	}
+	};
 	drawpart.util();
 	//加载css
 	var head = document.getElementsByTagName('head')[0];
@@ -39,14 +60,16 @@ function Slider(options)
 
 	var time;
 	
-	var Distance = slider_wrap.offsetWidth;
 	var animate = {
 		slider_wrap:document.getElementById("slider_wrap"),
 		slider_inner:document.getElementById("slider_inner"),
+		pagelist:document.getElementById("pagenation").getElementsByTagName("span"),
 		index:0,
+		dis:width,
+		direction:direction==1?1:-1,
 		auto:function(){
 			var start = self.slider_inner.offsetLeft;
-			var end = self.index*Distance*(-1);
+			var end = self.index*self.dis*direction;
 			var change = end -start;
 			console.log(change);
 			var timer;
@@ -70,13 +93,31 @@ function Slider(options)
 		forward:function(){
 			
 			self.index++;
+			
 			console.log(self.index);
             //当图片下标到最后一张把小标换0
-            if(self.index>imgs.length){
+            if(self.index==imgs.length){
                 self.index=0;
+               
+
             }
-          
+            if(self.index!=0)
+            	self.pagelist[self.index].previousSibling.removeAttribute("id");
+            else
+            	self.pagelist[imgs.length-1].removeAttribute("id");
+          	self.pagelist[self.index].setAttribute("id","selected");
+            
+            
             self.auto();
+		},
+		backward:function(){
+			console.log(1);
+			self.index--;
+			if(self.index<0)
+			{
+				self.index = imgs.length-1;
+			}
+			self.auto();
 		}
 	};
 	var self = animate;
