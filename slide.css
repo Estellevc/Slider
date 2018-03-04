@@ -8,3 +8,8 @@
 .pagenation span{padding:5px 8px;background: blue;margin-left: 15px;cursor: pointer;border-radius: 50%;
 color:white;}
 #selected{ background: red; }
+.btnbox{position:absolute;z-index:20;text-align: center; line-height: 100%;}
+.btnbox span{color:#fff;line-height: 100%;}
+#leftbtnbox{left:0;height: 100%; width: 40px;}
+#rightbtnbox{right:0;height: 100%; width: 40px;}
+.btnhover{background: #000;opacity: 0.2;}
